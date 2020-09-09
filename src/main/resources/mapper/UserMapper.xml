@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjj.faq.mapper.UserMapper">
+
+    <resultMap id="permissionsMap" type="com.zjj.faq.entity.Permission">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    <select id="getPermissions"  resultMap="permissionsMap">
+        select p.id,p.name
+        from user u
+        join user_role ur on u.id=ur.userid
+        join role_permission rp on rp.roleId=ur.roleid
+        join permission p on rp.permissionid=p.id
+        where u.username=#{name}
+    </select>
+
+    <select id="getPassword" resultType="string">
+        select password from user where username=#{name}
+    </select>
+</mapper>
