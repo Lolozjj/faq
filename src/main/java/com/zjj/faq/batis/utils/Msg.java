@@ -7,23 +7,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author chen
- * @date 2019/7/23
- * @email 15218979950@163.com
+ * @author zjj
+ *
  * @description  用于返回前端json数据的工具类
  */
 public class Msg {
 
-    // 状态码
+    /**
+     * 状态码
+     */
     @Getter
     @Setter
     private int status;
-    // 提示信息
+    /**
+     * 提示信息
+     */
     @Getter
     @Setter
     private String message;
 
-    // 封装有效数据
+    /**
+     * 封装的有效数据
+     */
     private Map<String, Object> data = new HashMap<String, Object>();
 
     public static Msg success() {

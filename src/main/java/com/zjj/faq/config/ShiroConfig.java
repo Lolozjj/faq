@@ -2,7 +2,7 @@ package com.zjj.faq.config;
 
 
 import com.zjj.faq.batis.shiro.CustomRealm;
-import com.zjj.faq.filter.JWTFilter;
+import com.zjj.faq.filter.JwtFilter;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -38,12 +38,12 @@ public class ShiroConfig {
         // 添加自己的过滤器并且取名为jwt
         Map<String, Filter> filterMap = new LinkedHashMap<>();
         //设置我们自定义的JWT过滤器
-        filterMap.put("jwt", new JWTFilter());
+        filterMap.put("jwt", new JwtFilter());
         factoryBean.setFilters(filterMap);
         factoryBean.setSecurityManager(securityManager);
 //        // 设置无权限时跳转的 url;
         factoryBean.setUnauthorizedUrl("/noPermissions");
-        Map<String, String> filterRuleMap = new HashMap<>();
+        Map<String, String> filterRuleMap = new HashMap<>(50);
         // 所有请求通过我们自己的JWT Filter
         filterRuleMap.put("/**", "jwt");
 //        // 放行不需要权限认证的接口
@@ -92,8 +92,13 @@ public class ShiroConfig {
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("MD5");// 散列算法:这里使用MD5算法;
-        hashedCredentialsMatcher.setHashIterations(2);// 散列的次数，比如散列两次，相当于 md5(md5(""));
+        /**
+         * 散列算法:这里使用MD5算法;
+         * 散列的次数，比如散列两次，相当于 md5(md5(""));
+         */
+        hashedCredentialsMatcher.setHashAlgorithmName("MD5");
+        hashedCredentialsMatcher.setHashIterations(2);
+
         hashedCredentialsMatcher.setStoredCredentialsHexEncoded(true);
         return hashedCredentialsMatcher;
     }

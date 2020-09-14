@@ -15,10 +15,14 @@ import java.util.Date;
  * @email 15218979950@163.com
  * @description  JWT工具类
  */
-public class JWTUtil {
-    // 过期时间 24 小时
+public class JwtUtil {
+    /**
+     * token 过期时间
+     */
     private static final long EXPIRE_TIME = 60 * 24 * 60 * 1000;
-    // 密钥
+    /**
+     * 密钥
+     */
     private static final String SECRET = "zheng";
 
     /**

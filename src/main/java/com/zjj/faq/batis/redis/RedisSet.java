@@ -13,7 +13,7 @@ import java.util.Set;
  * 以下可能有部分方法含有参数传Collection的,本案例没有描述,你们可以根据实际参数类型传参
  **/
 @Component
-public class RedisSet extends RedisOperation{
+public class RedisSet extends BaseRedisOperation{
 
 
     /**

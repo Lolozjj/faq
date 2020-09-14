@@ -18,18 +18,32 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class ExceptionController {
 
-    // 捕捉shiro的异常
+    /**
+     * 捕捉ShiroException的异常
+     * @return 给前端返回Msg
+     */
     @ExceptionHandler(ShiroException.class)
     public Msg handle401() {
         return Msg.noPermission().add("info","您没有权限访问！");
     }
 
-    // 捕捉其他所有异常
+    /**
+     * 捕捉其他所有异常
+     * @param request 请求
+     * @param ex 异常
+     * @return 给前端返回Msg
+     */
     @ExceptionHandler(Exception.class)
     public Msg globalException(HttpServletRequest request, Throwable ex) {
+        ex.printStackTrace();
         return Msg.code(getStatus(request).value()).add("info","访问出错，无法访问: " + ex.getMessage());
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     */
     private HttpStatus getStatus(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         if (statusCode == null) {

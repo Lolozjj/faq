@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @date ：2020/9/7 0007 23:16
  */
 @RestController
-//@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -23,7 +22,7 @@ public class UserController {
 
     @PostMapping("/user")
     @RequiresRoles(logical = Logical.OR, value = {"boss"})
-    private String saveUser(@RequestBody User user){
+    private int saveUser(@RequestBody User user){
        return userService.add(user);
     }
 }

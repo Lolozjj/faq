@@ -12,10 +12,10 @@
         join user_role ur on u.id=ur.userid
         join role_permission rp on rp.roleId=ur.roleid
         join permission p on rp.permissionid=p.id
-        where u.username=#{name}
+        where u.email=#{email}
     </select>
 
     <select id="getPassword" resultType="string">
-        select password from user where username=#{name}
+        select password from user where email=#{email}
     </select>
 </mapper>

@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author 阿呆的小鸡仔
+ */
 @Component
-public class RedisString extends RedisOperation {
+public class RedisString extends BaseRedisOperation {
 
     /**
      * 设置一个字符串类型的值
@@ -70,8 +73,9 @@ public class RedisString extends RedisOperation {
      * @return 批量获取，key不存在返回null
      */
     public List<String> getMulti(List<String> keys){
-        if(keys==null)
+        if(keys==null) {
             return null;
+        }
         return stringRedisTemplate.opsForValue().multiGet(keys);
     }
 

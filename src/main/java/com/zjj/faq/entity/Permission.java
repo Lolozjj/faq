@@ -17,6 +17,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class Permission implements Serializable {
-    private Long id; //主键
-    private String name; //权限名称
+    /**
+     * 主键
+     */
+    private Long id;
+    /**
+     * 名称
+     */
+    private String name;
 }

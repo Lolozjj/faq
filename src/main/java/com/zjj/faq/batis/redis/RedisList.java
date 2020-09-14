@@ -9,7 +9,7 @@ import java.util.List;
  * @author zjj
  **/
 @Component
-public class RedisList extends RedisOperation{
+public class RedisList extends BaseRedisOperation{
 
     /**
      *  在变量左边添加元素值。

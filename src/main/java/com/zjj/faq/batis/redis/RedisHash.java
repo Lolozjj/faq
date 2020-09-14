@@ -13,23 +13,9 @@ import java.util.Set;
  * @author Gjing
  **/
 @Component
-public class RedisHash  extends RedisOperation{
+public class RedisHash  extends BaseRedisOperation{
 
-    /**
-     * 新增hashMap值
-     * 
-     * put(H key, HK hashKey, HV value)
-     */
-    /**
-    public void put(String key,String hashKey,String value) {
-        stringRedisTemplate.opsForHash().put(key,hashKey,value);
-    }
 
-    /**
-     * 以map集合的形式添加键值对
-     * 
-     * putAll(H key, Map<? extends HK,? extends HV> m)
-     */
     public void putAll(String key, Map<String,String> map) {
         stringRedisTemplate.opsForHash().putAll(key, map);
     }

@@ -22,16 +22,43 @@ import java.util.List;
 @Builder
 @Table(name = "user")
 public class User implements Serializable {
-    @Id                         //需要指定主键
+    @Id
     @Column(name = "id")
-    protected Long id; //主键
-    protected String username; //姓名
-    protected String email; //邮箱
-    protected String phone; //手机号
-    protected String account; //账号
-    protected String password; //密码
-    protected Integer state; //状态
-    protected String salt; //密码加密的盐值
-    protected List<Role> roles; //角色
+    /**
+     * 主键
+     */
+    protected Long id;
+    /**
+     * 姓名
+     */
+    protected String username;
+    /**
+     * 邮箱
+     */
+    protected String email;
+    /**
+     * 手机号
+     */
+    protected String phone;
+    /**
+     * 账号
+     */
+    protected String account;
+    /**
+     * 密码
+     */
+    protected String password;
+    /**
+     * 账号状态(1正常2异常3冻结4封号)
+     */
+    protected Integer state;
+    /**
+     * 加密盐值
+     */
+    protected String salt;
+    /**
+     * 角色列表
+     */
+    protected List<Role> roles;
 
 }

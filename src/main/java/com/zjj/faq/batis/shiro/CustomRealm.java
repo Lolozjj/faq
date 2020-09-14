@@ -39,7 +39,7 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     public boolean supports(AuthenticationToken token) {
-        return token instanceof JWTToken;
+        return token instanceof JwtToken;
     }
 
     /**
@@ -50,8 +50,8 @@ public class CustomRealm extends AuthorizingRealm {
         System.out.println("————身份认证方法————");
         String token = (String) authenticationToken.getCredentials();
         // 解密获得username，用于和数据库进行对比
-        String username = JWTUtil.getUsername(token);
-        if (username == null || !JWTUtil.verify(token, username)) {
+        String username = JwtUtil.getUsername(token);
+        if (username == null || !JwtUtil.verify(token, username)) {
             throw new AuthenticationException("token认证失败！");
         }
 
@@ -75,21 +75,8 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         System.out.println("————权限认证————");
-        String username = JWTUtil.getUsername(principals.toString());
+        String username = JwtUtil.getUsername(principals.toString());
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-//        //获得该用户角色
-//        String role = userService.getRoles(username);
-//        //每个角色拥有默认的权限
-//        String rolePermission = userService.getRolePermission(username);
-//        //每个用户可以设置新的权限
-//        String permission = userService.getPermission(username);
-//
-//        Set<String> roleSet = new HashSet<>();
-//        Set<String> permissionSet = new HashSet<>();
-//        //需要将 role, permission 封装到 Set 作为 info.setRoles(), info.setStringPermissions() 的参数
-//        roleSet.add(role);
-//        permissionSet.add(rolePermission);
-//        permissionSet.add(permission);
         Set<String> roleSet=new HashSet<>();
         Set<String> permissionSet=new HashSet<>();
         List<Role> roles = userService.getRoles(username);

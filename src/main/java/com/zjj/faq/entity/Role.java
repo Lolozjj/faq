@@ -18,7 +18,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Role implements Serializable {
-    private Long id; //主键
-    private String name; //角色名称
-    private List<Permission> permissions; //拥有的权限集合
+    /**
+     * 主键
+     */
+    private Long id;
+    /**
+     * 角色名称
+     */
+    private String name; 
+    /**
+     * 拥有的权限集合
+     */
+    private List<Permission> permissions;
 }

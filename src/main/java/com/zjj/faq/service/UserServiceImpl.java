@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService{
     private UserMapper userMapper;
 
     @Override
-    public String getPassword(String name) {
-        return userMapper.getPassword(name);
+    public String getPassword(String email) {
+        return userMapper.getPassword(email);
     }
 
     @Override
@@ -57,16 +57,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String add(User user) {
-        try {
-            user.setPassword(encryption(user.getPassword()));
-            userMapper.insert(user);
-            return "insert ok";
-        } catch (Exception e) {
-            log.error(e.toString());
-            return "error1";
-        }
-
+    public int add(User user) {
+        user.setPassword(encryption(user.getPassword()));
+        return userMapper.insert(user);
     }
 
 
