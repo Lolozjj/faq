@@ -12,10 +12,25 @@
         join user_role ur on u.id=ur.userid
         join role_permission rp on rp.roleId=ur.roleid
         join permission p on rp.permissionid=p.id
-        where u.email=#{email}
+        where u.account=#{account}
+    </select>
+    <select id="getStateByAccount" resultType="java.lang.Integer">
+        select state from user where account=#{account}
+    </select>
+    <select id="getPassword" resultType="string">
+        select password from user where account=#{account}
+    </select>
+    <select id="getAccountByEmail" resultType="java.lang.String">
+        select account from user where email=#{email}
+    </select>
+    <select id="getAccountByPhone" resultType="java.lang.String">
+        select account from user where phone=#{phone}
     </select>
 
-    <select id="getPassword" resultType="string">
-        select password from user where email=#{email}
+    <select id="getRoles" resultType="com.zjj.faq.entity.Role">
+        select r.id,r.name from
+        user u join user_role ur on u.id = ur.userid
+        join role r on ur.roleid = r.id
+        where u.account=#{account}
     </select>
 </mapper>

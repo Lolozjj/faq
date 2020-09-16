@@ -1,4 +1,4 @@
-package com.zjj.faq.service;
+package com.zjj.faq.service.inter;
 
 import com.zjj.faq.batis.utils.Msg;
 

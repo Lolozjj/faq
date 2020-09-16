@@ -4,10 +4,8 @@ import com.zjj.faq.batis.utils.Msg;
 import com.zjj.faq.controller.request.LoginRequest;
 import com.zjj.faq.controller.request.RegisterRequest;
 import com.zjj.faq.controller.request.ValidationEmailRequest;
-import com.zjj.faq.entity.response.CaptchaResponse;
-import com.zjj.faq.service.LoginService;
+import com.zjj.faq.service.outer.login.LoginService;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * @author ：zjj
- * @description：TODO
+ * @description： 登录控制器
  * @date ：2020/9/8 0008 9:53
  */
 @RestController
@@ -32,7 +30,7 @@ public class LoginController {
 
     @ApiOperation(value = "请求登录图形验证码", notes = "验证码--不进行拦截")
     @RequestMapping("/captcha")
-    public CaptchaResponse captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Msg captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return loginService.getCaptcha(request,response);
     }
 

@@ -1,11 +1,10 @@
-package com.zjj.faq.service;
+package com.zjj.faq.service.inter;
 
 import com.zjj.faq.batis.redis.RedisString;
 import com.zjj.faq.batis.utils.MailUtil;
 import com.zjj.faq.batis.utils.Msg;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.EmailException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,8 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class EmailServiceImpl implements EmailService {
-    @Autowired
-    private RedisString redisString;
+    private final RedisString redisString;
+
+    public EmailServiceImpl(RedisString redisString) {
+        this.redisString = redisString;
+    }
 
 
     /**
@@ -27,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
     public Msg sendEmail(String email) {
         try {
             String code = MailUtil.sendEmail(email);
-            redisString.append(email,code);
+            redisString.setOne(email,code,1000*60*5);
             return Msg.success();
         } catch (EmailException e) {
             log.error(email+"邮件发送信息错误");

@@ -2,8 +2,9 @@ package com.zjj.faq.batis.shiro;
 
 
 
+import com.zjj.faq.entity.Permission;
 import com.zjj.faq.entity.Role;
-import com.zjj.faq.service.UserService;
+import com.zjj.faq.service.inter.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -31,8 +32,11 @@ import java.util.stream.Collectors;
 @Component
 public class CustomRealm extends AuthorizingRealm {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public CustomRealm(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * 必须重写此方法，不然会报错
@@ -47,23 +51,21 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println("————身份认证方法————");
         String token = (String) authenticationToken.getCredentials();
         // 解密获得username，用于和数据库进行对比
-        String username = JwtUtil.getUsername(token);
-        if (username == null || !JwtUtil.verify(token, username)) {
+        String account = JwtUtil.getAccount(token);
+        if (account == null || !JwtUtil.verify(token, account)) {
             throw new AuthenticationException("token认证失败！");
         }
-
         /* 以下数据库查询可根据实际情况，可以不必再次查询，这里我两次查询会很耗资源
          * 我这里增加两次查询是因为考虑到数据库管理员可能自行更改数据库中的用户信息
          */
-        String password = userService.getPassword(username);
+        String password = userService.getPassword(account);
         if (password == null) {
             throw new AuthenticationException("该用户不存在！");
         }
-        int ban = userService.getState(username);
-        if (ban == 1) {
+        int ban = userService.getState(account);
+        if (ban != 1) {
             throw new AuthenticationException("该用户已被封号！");
         }
         return new SimpleAuthenticationInfo(token, token, ByteSource.Util.bytes(2000+""),"CustomRealm");
@@ -74,16 +76,10 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("————权限认证————");
-        String username = JwtUtil.getUsername(principals.toString());
+        String account = JwtUtil.getAccount(principals.toString());
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        Set<String> roleSet=new HashSet<>();
-        Set<String> permissionSet=new HashSet<>();
-        List<Role> roles = userService.getRoles(username);
-        for(Role r: roles){
-            roleSet.add(r.getName());
-            permissionSet.addAll(r.getPermissions().stream().map(permission->{return permission.getName();}).collect(Collectors.toList()));
-        }
+        Set<String> roleSet= userService.getRoles(account).stream().map(Role::getName).collect(Collectors.toSet());;
+        Set<String> permissionSet=userService.getPermission(account).stream().map(Permission::getName).collect(Collectors.toSet());;
         //设置该用户拥有的角色和权限
         info.setRoles(roleSet);
         info.setStringPermissions(permissionSet);

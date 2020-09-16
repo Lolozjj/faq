@@ -1,55 +1,31 @@
-package com.zjj.faq.service;
+package com.zjj.faq.service.outer.login;
 
-import com.wf.captcha.SpecCaptcha;
 import com.zjj.faq.batis.redis.RedisString;
 import com.zjj.faq.batis.shiro.JwtUtil;
-import com.zjj.faq.batis.utils.MailUtil;
 import com.zjj.faq.batis.utils.Msg;
 import com.zjj.faq.entity.User;
-import com.zjj.faq.entity.response.CaptchaResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zjj.faq.service.inter.EmailService;
+import com.zjj.faq.service.inter.UserService;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.UUID;
 
 /**
  * @author ：zjj
- * @description：TODO
+ * @description： 邮箱登录服务
  * @date ：2020/9/8 0008 10:04
  */
 
 @Service
-public class EmailLoginServiceImpl implements LoginService {
-    @Autowired
-    private RedisString redisString;
+public class EmailLoginServiceImpl extends BaseLogin implements LoginService {
 
-    @Autowired
-    private UserService userService;
+    private final EmailService emailService;
 
-    @Autowired
-    private EmailService emailService;
-
-    /**
-     * 设置登陆图片验证码
-     * @param request 请求
-     * @param response 响应
-     * @return 该验证码的uui
-     * @throws IOException io异常
-     */
-    @Override
-    public CaptchaResponse getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
-        String verCode = specCaptcha.text().toLowerCase();
-        String uid = UUID.randomUUID().toString();
-        redisString.setOne(uid,verCode,1000*60*5);
-        return new CaptchaResponse(uid,specCaptcha.toBase64());
+    public EmailLoginServiceImpl(RedisString redisString, UserService userService, EmailService emailService) {
+        super(redisString, userService);
+        this.emailService = emailService;
     }
 
     /**
-     * 登录验证
+     * 邮箱登录验证
      * @param email 邮箱
      * @param password 密码
      * @param captchaUid 图形验证码id
@@ -60,7 +36,7 @@ public class EmailLoginServiceImpl implements LoginService {
     public Msg login(String email, String password, String captchaUid, String captchaText) {
         String inputPassword = userService.encryption(password);
         String realPassword =userService.getPassword(email);
-        System.out.println(realPassword);
+
         if (realPassword == null) {
             return Msg.fail().add("info","用户名错误");
         }
@@ -70,7 +46,8 @@ public class EmailLoginServiceImpl implements LoginService {
         if(captchaText==null||!redisString.getOne(captchaUid).equals(captchaText.toLowerCase().trim())){
             return Msg.fail().add("info","验证码错误");
         }
-        return Msg.success().add("token", JwtUtil.createToken(email));
+        String account=userService.getAccountByEmail(email);
+        return Msg.success().add("token", JwtUtil.createToken(account));
 
     }
     /**
@@ -80,8 +57,7 @@ public class EmailLoginServiceImpl implements LoginService {
      */
     @Override
     public Msg captchaByRegister(String email) {
-        Msg msg = emailService.sendEmail(email);
-        return msg;
+        return emailService.sendEmail(email);
     }
 
     /**
@@ -103,7 +79,7 @@ public class EmailLoginServiceImpl implements LoginService {
      * 注册账号
      * @param email 邮箱
      * @param password 密码
-     * @return 注册结果
+     * @return 注册结果,账号
      */
     @Override
     public Msg register(String email, String password) {
@@ -112,11 +88,14 @@ public class EmailLoginServiceImpl implements LoginService {
         user.setPassword(password);
         user.setState(1);
         user.setSalt("2000");
+        user.setAccount(randomAccount());
         int resultSum = userService.add(user);
         if(resultSum==0) {
             return Msg.fail().add("info","注册失败");
         }else{
-            return Msg.success();
+            return Msg.success().add("account",user.getAccount());
         }
     }
+
+
 }

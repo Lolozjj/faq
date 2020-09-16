@@ -1,7 +1,6 @@
-package com.zjj.faq.service;
+package com.zjj.faq.service.outer.login;
 
 import com.zjj.faq.batis.utils.Msg;
-import com.zjj.faq.entity.response.CaptchaResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +17,7 @@ public interface LoginService {
      * @return 验证码的id和具体内容
      * @throws IOException io异常
      */
-    public CaptchaResponse getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    public Msg getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
      * 用户登录

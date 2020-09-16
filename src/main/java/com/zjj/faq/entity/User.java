@@ -22,11 +22,11 @@ import java.util.List;
 @Builder
 @Table(name = "user")
 public class User implements Serializable {
-    @Id
-    @Column(name = "id")
     /**
      * 主键
      */
+    @Id
+    @Column(name = "id")
     protected Long id;
     /**
      * 姓名
