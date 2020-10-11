@@ -4,7 +4,7 @@ import com.wf.captcha.SpecCaptcha;
 import com.zjj.faq.batis.redis.RedisString;
 import com.zjj.faq.batis.utils.Msg;
 import com.zjj.faq.entity.response.CaptchaResponse;
-import com.zjj.faq.service.inter.UserService;
+import com.zjj.faq.mapper.UserMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,14 +21,15 @@ abstract class BaseLogin {
      * redis 缓存使用
      */
     final RedisString redisString;
+
     /**
      * 用户服务
      */
-    final UserService userService;
+    final UserMapper userMapper;
 
-    protected BaseLogin(RedisString redisString, UserService userService) {
+    protected BaseLogin(RedisString redisString,  UserMapper userMapper) {
         this.redisString = redisString;
-        this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     /**

@@ -6,6 +6,18 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
     </resultMap>
+    <update id="updateUserByAccount" parameterType="com.zjj.faq.entity.User">
+        update user set
+        email=#{email} ,
+        phone=#{phone} ,
+        username=#{username}
+        where account=#{account}
+    </update>
+    <update id="updatePasswordByAccount">
+        update user set
+        password=#{password}
+        where account=#{account}
+    </update>
     <select id="getPermissions"  resultMap="permissionsMap">
         select p.id,p.name
         from user u
@@ -32,5 +44,21 @@
         user u join user_role ur on u.id = ur.userid
         join role r on ur.roleid = r.id
         where u.account=#{account}
+    </select>
+    <select id="fuzzyQueryAdminUser" resultType="com.zjj.faq.service.outer.login.response.AdminUserResponse">
+        select account,username,email,phone from
+        user
+        where
+        account like #{account} and
+        username like #{username} and
+        email like #{email} and
+        phone like #{phone} and
+        state = -1
+    </select>
+    <select id="getUsernameByAccount" resultType="java.lang.String">
+        select username from user where account=#{account}
+    </select>
+    <select id="getIdByAccount" resultType="java.lang.Long">
+        select id from user where account=#{account}
     </select>
 </mapper>

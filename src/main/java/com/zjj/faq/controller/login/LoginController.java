@@ -1,9 +1,9 @@
-package com.zjj.faq.controller;
+package com.zjj.faq.controller.login;
 
 import com.zjj.faq.batis.utils.Msg;
-import com.zjj.faq.controller.request.LoginRequest;
-import com.zjj.faq.controller.request.RegisterRequest;
-import com.zjj.faq.controller.request.ValidationEmailRequest;
+import com.zjj.faq.controller.login.request.LoginRequest;
+import com.zjj.faq.controller.login.request.RegisterRequest;
+import com.zjj.faq.controller.login.request.ValidationEmailRequest;
 import com.zjj.faq.service.outer.login.LoginService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,11 @@ import javax.validation.constraints.NotBlank;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class LoginController {
 
-    @Autowired
-    private LoginService loginService;
+    private final LoginService loginService;
+
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
 
     @ApiOperation(value = "请求登录图形验证码", notes = "验证码--不进行拦截")
@@ -40,9 +43,9 @@ public class LoginController {
         return loginService.captchaByRegister(email);
     }
 
-    @ApiOperation(value = "请求邮箱验证码", notes = "验证码--不进行拦截")
+    @ApiOperation(value = "请求验证邮箱验证码", notes = "验证码--不进行拦截")
     @PostMapping("/emailCaptcha")
-    public Msg validationByEmail(ValidationEmailRequest validationEmailRequest){
+    public Msg validationByEmail(@RequestBody ValidationEmailRequest validationEmailRequest){
         return loginService.validationByRegister(validationEmailRequest.getEmail(), validationEmailRequest.getCaptchaText());
     }
 
@@ -53,7 +56,7 @@ public class LoginController {
     }
 
     @ApiOperation(value = "用户注册", notes = "注册--不进行拦截")
-    @PostMapping("/register")
+    @PostMapping("/emailRegister")
     public Msg register(@RequestBody @Valid @NotBlank RegisterRequest registerRequest){
         return loginService.register(registerRequest.getAccount(),registerRequest.getPassword());
     }

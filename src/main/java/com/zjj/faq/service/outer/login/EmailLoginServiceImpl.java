@@ -4,8 +4,8 @@ import com.zjj.faq.batis.redis.RedisString;
 import com.zjj.faq.batis.shiro.JwtUtil;
 import com.zjj.faq.batis.utils.Msg;
 import com.zjj.faq.entity.User;
+import com.zjj.faq.mapper.UserMapper;
 import com.zjj.faq.service.inter.EmailService;
-import com.zjj.faq.service.inter.UserService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,8 +19,8 @@ public class EmailLoginServiceImpl extends BaseLogin implements LoginService {
 
     private final EmailService emailService;
 
-    public EmailLoginServiceImpl(RedisString redisString, UserService userService, EmailService emailService) {
-        super(redisString, userService);
+    public EmailLoginServiceImpl(RedisString redisString, UserMapper userMapper, EmailService emailService) {
+        super(redisString,  userMapper);
         this.emailService = emailService;
     }
 
@@ -34,9 +34,9 @@ public class EmailLoginServiceImpl extends BaseLogin implements LoginService {
      */
     @Override
     public Msg login(String email, String password, String captchaUid, String captchaText) {
-        String inputPassword = userService.encryption(password);
-        String realPassword =userService.getPassword(email);
-
+        String inputPassword = userMapper.encryption(password);
+        String account=userMapper.getAccountByEmail(email);
+        String realPassword =userMapper.getPassword(account);
         if (realPassword == null) {
             return Msg.fail().add("info","用户名错误");
         }
@@ -46,7 +46,6 @@ public class EmailLoginServiceImpl extends BaseLogin implements LoginService {
         if(captchaText==null||!redisString.getOne(captchaUid).equals(captchaText.toLowerCase().trim())){
             return Msg.fail().add("info","验证码错误");
         }
-        String account=userService.getAccountByEmail(email);
         return Msg.success().add("token", JwtUtil.createToken(account));
 
     }
@@ -85,11 +84,11 @@ public class EmailLoginServiceImpl extends BaseLogin implements LoginService {
     public Msg register(String email, String password) {
         User user = new User();
         user.setEmail(email);
-        user.setPassword(password);
         user.setState(1);
         user.setSalt("2000");
-        user.setAccount(randomAccount());
-        int resultSum = userService.add(user);
+        user.setAccount(super.randomAccount());
+        user.setPassword(userMapper.encryption(password));
+        int resultSum = userMapper.insert(user);
         if(resultSum==0) {
             return Msg.fail().add("info","注册失败");
         }else{

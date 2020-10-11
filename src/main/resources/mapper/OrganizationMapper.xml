@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zjj.faq.mapper.OrganizationMapper">
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into organization values(#{id},#{name},#{describe},#{address},#{createDate},#{creator.id},30,1)
+    </insert>
+    <insert id="addUserToOrganization">
+        insert into organization_user values(#{userId},#{organizationId},#{identity})
+    </insert>
+    <update id="organizationNumUp">
+        update organization set
+        num=num+1
+        where id=#{organizationId} and max > num
+    </update>
+    <delete id="deleteOrganizationOnUserToOrganization">
+        delete from organization_user where organization_id=#{id}
+    </delete>
+    <select id="getOrganizationByCreator" resultType="com.zjj.faq.entity.Organization">
+        select * from organization where creator_id=#{id}
+    </select>
+    <resultMap id="organizationMap" type="com.zjj.faq.entity.Organization">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="describe" property="describe"/>
+        <result column="address" property="address"/>
+        <result column="max" property="max"/>
+        <result column="num" property="num"/>
+        <association property="creator" javaType="com.zjj.faq.entity.User">
+            <result column="username" property="username"/>
+        </association>
+    </resultMap>
+    <select id="searchOrganizationByIdOrName" resultMap="organizationMap">
+        select o.id,o.name,u.username,o.max,o.num ,o.describe,o.address from organization o
+        join user u on o.creator_id = u.id
+        where o.id=#{id} or o.name like "%"#{idOrName}"%"
+    </select>
+    <select id="getWithOrganizationJoin" resultMap="organizationMap">
+       select o.id,o.name,u.username,o.max,o.num ,o.describe,o.address from organization_user ou
+       join organization o on ou.organization_id = o.id
+	   join user u on o.creator_id = u.id
+       where ou.user_id=#{userId} and ou.identity!=0
+    </select>
+</mapper>

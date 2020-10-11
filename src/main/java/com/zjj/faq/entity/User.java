@@ -49,7 +49,7 @@ public class User implements Serializable {
      */
     protected String password;
     /**
-     * 账号状态(1正常2异常3冻结4封号)
+     * 账号状态(-1代表是管理员，正数是普通用户：1正常2异常3冻结4封号)
      */
     protected Integer state;
     /**

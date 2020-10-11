@@ -1,4 +1,4 @@
-package com.zjj.faq.controller.request;
+package com.zjj.faq.controller.login.request;
 
 import lombok.Data;
 

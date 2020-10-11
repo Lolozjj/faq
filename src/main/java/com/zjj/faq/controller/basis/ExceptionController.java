@@ -1,4 +1,4 @@
-package com.zjj.faq.batis.exception;
+package com.zjj.faq.controller.basis;
 
 
 import com.zjj.faq.batis.utils.Msg;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author chen
+ * @author 阿呆的小鸡仔
  * @date 2019/7/23
  * @email 15218979950@163.com
  * @description 对异常进行返回处理
@@ -27,6 +27,7 @@ public class ExceptionController {
         return Msg.noPermission().add("info","您没有权限访问！");
     }
 
+
     /**
      * 捕捉其他所有异常
      * @param request 请求
@@ -35,6 +36,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(Exception.class)
     public Msg globalException(HttpServletRequest request, Throwable ex) {
+
         ex.printStackTrace();
         return Msg.code(getStatus(request).value()).add("info","访问出错，无法访问: " + ex.getMessage());
     }
